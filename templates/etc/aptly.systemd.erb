@@ -1,0 +1,10 @@
+[Unit]
+Description=Aptly API Service
+
+[Service]
+ExecStart=/usr/bin/aptly api serve -listen=<%= @listen %><% if @enable_cli_and_http %> -no-lock<% end %>
+User=<%= @user %>
+Group=<%= @group %>
+
+[Install]
+WantedBy=multi-user.target

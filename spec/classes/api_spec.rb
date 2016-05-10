@@ -2,11 +2,18 @@ require 'spec_helper'
 
 describe 'aptly::api' do
 
+  let(:facts) do
+    {
+      :operatingsystem => 'Ubuntu',
+      :operatingsystemrelease => '14.04'
+    }
+  end
+
   context 'param defaults' do
     let(:params) {{ }}
 
     it do
-      should contain_file('aptly-upstart')
+      should contain_file('/etc/init/aptly-api.conf')
       .with_path('/etc/init/aptly-api.conf')
       .without_content(/^\s*author /)
       .with_content(/^setuid root$/)
@@ -52,7 +59,7 @@ describe 'aptly::api' do
         :user => 'yolo'
       }}
 
-      it { should contain_file('aptly-upstart').with_content(/^setuid yolo$/) }
+      it { should contain_file('/etc/init/aptly-api.conf').with_content(/^setuid yolo$/) }
     end
 
     context 'not a string' do
@@ -70,7 +77,7 @@ describe 'aptly::api' do
         :group => 'yolo'
       }}
 
-      it { should contain_file('aptly-upstart').with_content(/^setgid yolo$/) }
+      it { should contain_file('/etc/init/aptly-api.conf').with_content(/^setgid yolo$/) }
     end
 
     context 'not a string' do
@@ -88,7 +95,7 @@ describe 'aptly::api' do
         :listen => '127.0.0.1:9090'
       }}
 
-      it { should contain_file('aptly-upstart').with_content(/^exec \/usr\/bin\/aptly api serve -listen=127.0.0.1:9090$/) }
+      it { should contain_file('/etc/init/aptly-api.conf').with_content(/^exec \/usr\/bin\/aptly api serve -listen=127.0.0.1:9090$/) }
     end
 
     context 'not a string' do
@@ -112,7 +119,7 @@ describe 'aptly::api' do
     context 'none (default)' do
       let(:params) {{ }}
 
-      it { should contain_file('aptly-upstart').with_content(/^console none$/) }
+      it { should contain_file('/etc/init/aptly-api.conf').with_content(/^console none$/) }
     end
 
     context 'log' do
@@ -120,7 +127,7 @@ describe 'aptly::api' do
         :log => 'log'
       }}
 
-      it { should contain_file('aptly-upstart').with_content(/^console log$/) }
+      it { should contain_file('/etc/init/aptly-api.conf').with_content(/^console log$/) }
     end
 
     context 'invalid value' do
@@ -134,7 +141,7 @@ describe 'aptly::api' do
 
   describe 'enable_cli_and_http' do
     context 'false (default)' do
-      it { should contain_file('aptly-upstart').without_content(/ -no-lock/) }
+      it { should contain_file('/etc/init/aptly-api.conf').without_content(/ -no-lock/) }
     end
 
     context 'true' do
@@ -142,7 +149,7 @@ describe 'aptly::api' do
         :enable_cli_and_http => true
       }}
 
-      it { should contain_file('aptly-upstart').with_content(/ -no-lock/) }
+      it { should contain_file('/etc/init/aptly-api.conf').with_content(/ -no-lock/) }
     end
   end
 end
